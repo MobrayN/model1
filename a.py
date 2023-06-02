@@ -17,14 +17,14 @@ def split_input_target(chunk):
     return input_text, target_text
 
 
-def create_dataset(text_as_int, seq_length=100, batch_size=64, buffer_size=10000):
+def create_dataset(text_as_int, seq_length=100, batch_size=128, buffer_size=10000):
     char_dataset = tf.data.Dataset.from_tensor_slices(text_as_int)
     dataset = char_dataset.batch(seq_length + 1, drop_remainder=True).map(split_input_target)
     dataset = dataset.shuffle(buffer_size).batch(batch_size, drop_remainder=True)
     return dataset
 
 
-def build_model(vocab_size, embedding_dim=256, rnn_units=1024, batch_size=64):
+def build_model(vocab_size, embedding_dim=256, rnn_units=1024, batch_size=128):
     model = tf.keras.Sequential([
         tf.keras.layers.Embedding(vocab_size, embedding_dim, batch_input_shape=[batch_size, None]),
         tf.keras.layers.LSTM(rnn_units, return_sequences=True, stateful=True, recurrent_initializer='glorot_uniform'),
