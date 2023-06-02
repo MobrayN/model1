@@ -63,11 +63,12 @@ def generate_text(model, char2idx, idx2char, start_string, generate_char_num=100
 
 
 #path_to_file = '/content/data.txt'
-if (len(sys.argv) < 3):
+if (len(sys.argv) < 4):
     exit("arg");
 
 path_to_file = sys.argv[1]
 epochs = int(sys.argv[2])
+output_file = sys.argv[3]
 print('file', path_to_file, 'epochs', epochs)
 
 text_as_int, vocab, char2idx, idx2char = process_text(path_to_file)
@@ -77,12 +78,12 @@ model.compile(optimizer='adam', loss=loss)
 model.summary()
 print('vocab: ', len(vocab))
 history = model.fit(dataset, epochs=epochs)
-model.save_weights("gen_text_weights.h5", save_format='h5')
+model.save_weights(output_file, save_format='h5')
 
-model = build_model(vocab_size=len(vocab), batch_size=1)
-model.load_weights("gen_text_weights.h5")
-model.summary()
-
-user_input = input(": ")
-generated_text = generate_text(model, char2idx, idx2char, start_string=user_input, generate_char_num=100)
-print(generated_text)
+#model = build_model(vocab_size=len(vocab), batch_size=1)
+#model.load_weights(output_file)
+#model.summary()
+#
+#user_input = input(": ")
+#generated_text = generate_text(model, char2idx, idx2char, start_string=user_input, generate_char_num=100)
+#print(generated_text)
