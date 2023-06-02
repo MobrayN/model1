@@ -1,5 +1,6 @@
 import numpy as np
 import tensorflow as tf
+import sys
 
 def process_text(file_path):
     text = open(file_path, 'rb').read().decode(encoding='utf-8')  # Read, then decode for py2 compat.
@@ -61,7 +62,13 @@ def generate_text(model, char2idx, idx2char, start_string, generate_char_num=100
     return start_string + ''.join(text_generated)
 
 
-path_to_file = '/content/data.txt'
+#path_to_file = '/content/data.txt'
+if (len(sys.argv) < 3):
+    exit("arg");
+
+path_to_file = sys.argv[1]
+epochs = int(sys.argv[2])
+print('file', path_to_file, 'epochs', epochs)
 
 text_as_int, vocab, char2idx, idx2char = process_text(path_to_file)
 dataset = create_dataset(text_as_int)
@@ -69,7 +76,7 @@ model = build_model(vocab_size=len(vocab))
 model.compile(optimizer='adam', loss=loss)
 model.summary()
 print('vocab: ', len(vocab))
-history = model.fit(dataset, epochs=5)
+history = model.fit(dataset, epochs=epochs)
 model.save_weights("gen_text_weights.h5", save_format='h5')
 
 model = build_model(vocab_size=len(vocab), batch_size=1)
